@@ -1,9 +1,20 @@
 // Das ist ein einzeiliger Kommentar
 /* Das ist ein mehrzeiliger Kommentar */
 
-// Der bodyparser bereitet die Daten aus dem HTML-Formular 
-// vor der Übergabe an die server.js auf.
-// Der bodyparser muss über das Terminal installiert werden:
-// npm install body-parser --save
+const express = require('express')
+const bodyParser = require('body-parser')
 
-const bodyparser = require('body-parser')
+const app = express()
+app.set('view engine', 'ejs')
+app.use(express.static('public'))
+app.use(bodyParser.urlencoded({extended: true}))
+
+const server = app.listen(process.env.PORT || 3000, () => {
+    console.log('Server lauscht auf Port %s', server.address().port)    
+})
+
+app.get('/',(req, res, next) => {   
+    res.render('index.ejs', {                    
+    })
+})
+
