@@ -17,7 +17,7 @@ class Kunde{
 let kunde = new Kunde()
 kunde.Mail = "zuki@gmail.com"
 kunde.Name = "Zuki"
-kunde.Kennwort = "12"
+kunde.Kennwort = "123"
 kunde.IdKunde = 4711
 
 const express = require('express')
@@ -115,7 +115,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
         konto.Kontonummer = req.body.kontonummer
         konto.Kontoart = req.body.kontoart
 
-        consolelog("Kunde ist angemeldet als " + idKunde)
+        console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
            meldung : "Das Konto " + konto.Kontonummer + " wurde erfolgreich angelegt." 
         })
