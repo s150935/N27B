@@ -154,3 +154,42 @@ app.post('/kontoAnlegen',(req, res, next) => {
     }
 })
 
+app.get('/profilBearbeiten',(req, res, next) => {   
+
+    let idKunde = req.cookies['istAngemeldetAls']
+    
+    if(idKunde){
+        console.log("Kunde ist angemeldet als " + idKunde)
+        
+        // ... dann wird kontoAnlegen.ejs gerendert.
+        
+        res.render('profilBearbeiten.ejs', {    
+            meldung : ""                          
+        })
+    }else{
+        res.render('login.ejs', {                    
+        })    
+    }
+})
+
+app.post('/profilBearbeiten',(req, res, next) => {   
+
+    let idKunde = req.cookies['istAngemeldetAls']
+    
+    if(idKunde){
+        console.log("Kunde ist angemeldet als " + idKunde)
+        
+        kunde.Nachname = req.body.nachname
+        kunde.Kennwort = req.body.kennwort
+        
+        res.render('profilBearbeiten.ejs', {                              
+            meldung : "Die Stammdaten wurden geändert."
+        })
+    }else{
+        // Die login.ejs wird gerendert 
+        // und als Response
+        // an den Browser übergeben.
+        res.render('login.ejs', {                    
+        })    
+    }
+})
