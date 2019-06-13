@@ -29,7 +29,7 @@ kunde.Mail = "zuki@gmail.com"
 kunde.Name = "Zuki"
 kunde.Kennwort = "123"
 kunde.IdKunde = 4711
-
+const bankleitzahl = "27000000"
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
