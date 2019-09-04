@@ -10,12 +10,12 @@ class Konto{
 class Kunde{
     constructor(){
         this.Mail
-        this.Name
+        this.Nachname
         this.Kennwort
         this.IdKunde
         this.Geburtsdatum
         this.Adresse
-        this.Telefon
+        this.Telefonnummer
     }
 }
 
@@ -185,11 +185,59 @@ app.post('/profilBearbeiten',(req, res, next) => {
     if(idKunde){
         console.log("Kunde ist angemeldet als " + idKunde)
         
-        kunde.Nachname = req.body.nachname
+        kunde.Telefonnummer = req.body.telefonnummer
+        kunde.Mail = req.body.mail
+        kunde.Adresse = req.body.adresse
+        kunde.Nachname = "Schmidt"
         kunde.Kennwort = req.body.kennwort
         
+        
+
         res.render('profilBearbeiten.ejs', {                              
             meldung : "Die Stammdaten wurden geändert."
+        })
+    }else{
+        // Die login.ejs wird gerendert 
+        // und als Response
+        // an den Browser übergeben.
+        res.render('login.ejs', {                    
+        })    
+    }
+})
+
+app.get('/ueberweisen',(req, res, next) => {   
+
+    let idKunde = req.cookies['istAngemeldetAls']
+    
+    if(idKunde){
+        console.log("Kunde ist angemeldet als " + idKunde)
+        
+        // ... dann wird kontoAnlegen.ejs gerendert.
+        
+        res.render('ueberweisen.ejs', {    
+            meldung : ""                          
+        })
+    }else{
+        res.render('login.ejs', {                    
+        })    
+    }
+})
+
+app.post('/ueberweisen',(req, res, next) => {   
+
+    let idKunde = req.cookies['istAngemeldetAls']
+    
+    if(idKunde){
+        console.log("Kunde ist angemeldet als " + idKunde)
+        
+        kunde.Telefonnummer = req.body.telefonnummer
+        kunde.Mail = req.body.mail
+        kunde.Adresse = req.body.adresse
+        kunde.Nachname = "Schmidt"
+        kunde.Kennwort = req.body.kennwort
+        
+        res.render('ueberweisen.ejs', {                              
+            meldung : "Die Überweisung wurde erfolgreich ausgeführt."
         })
     }else{
         // Die login.ejs wird gerendert 
