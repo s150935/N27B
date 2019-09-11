@@ -32,12 +32,23 @@ kunde.IdKunde = 4711
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const mysql = require('mysql')
 const iban = require('iban')
 const app = express()
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
+
+const dbVerbindung = mysql.createConnection({
+    host: "10.40.38.110",
+    port: "3306",
+    db: "dbn27",
+    user: "placematman",
+    password: "BKB123456!"
+})
+
+dbVerbindung.connect()
 
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Server lauscht auf Port %s', server.address().port)    
@@ -150,6 +161,10 @@ app.post('/kontoAnlegen',(req, res, next) => {
         let errechneteIban = iban.fromBBAN(laenderkennung, bankleitzahl + " " + req.body.kontonummer)
         console.log(errechneteIban)
 
+        // Einfügen von kontonummer in die Tabelle konto (SQL)
+
+        dbVerbindung.query("INSERT INTO konto(kontonummer) VALUES (123)")
+
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
            meldung : "Das Konto mit der IBAN " + errechneteIban + " wurde erfolgreich angelegt." 
@@ -230,12 +245,16 @@ app.post('/ueberweisen',(req, res, next) => {
     if(idKunde){
         console.log("Kunde ist angemeldet als " + idKunde)
         
-        kunde.Telefonnummer = req.body.telefonnummer
-        kunde.Mail = req.body.mail
-        kunde.Adresse = req.body.adresse
-        kunde.Nachname = "Schmidt"
-        kunde.Kennwort = req.body.kennwort
-        
+        // Das Zielkonto und der Betrag wird aus dem Formular entgegengenommen.
+
+        let zielkontonummer = req.body.zielkontonummer
+        let betrag = req.body.betrag
+
+        //ToDo: Saldo um den Betrag reduzieren.
+        //ToDo: Betrag beim Zielkonto gutschreiben.
+
+        // Umsetzung mit einer gemeinsamen relationalen Datenbank.
+
         res.render('ueberweisen.ejs', {                              
             meldung : "Die Überweisung wurde erfolgreich ausgeführt."
         })
