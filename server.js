@@ -163,7 +163,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
 
         // Einfügen von kontonummer in die Tabelle konto (SQL)
 
-        dbVerbindung.query("INSERT INTO konto(kontonummer) VALUES (123)")
+       
 
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
