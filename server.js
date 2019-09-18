@@ -50,13 +50,6 @@ const dbVerbindung = mysql.createConnection({
 
 dbVerbindung.connect()
 
-dbVerbindung.connect(function(err){
-    
-    dbVerbindung.query("CREATE TABLE IF NOT EXISTS konto(iban VARCHAR(22), anfangssaldo INT, kontoart VARCHAR(20), timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
-        console.log("Tabelle erstellt bzw. schon existent" + err)
-    })
-})
-
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Server lauscht auf Port %s', server.address().port)    
 })
@@ -170,12 +163,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
 
         // Einfügen von kontonummer in die Tabelle konto (SQL)
        
-        dbVerbindung.connect(function(err){
-    
-            dbVerbindung.query("INSERT INTO konto (iban, anfangssaldo, kontoart, timestamp) VALUES ('" + errechneteIban +"', 100, '" + konto.Kontoart + "', NOW());", function(err, result){
-                console.log("Tabelle erstellt bzw. schon existent" + err)
-            })
-        })
+       
 
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
