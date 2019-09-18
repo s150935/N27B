@@ -169,15 +169,13 @@ app.post('/kontoAnlegen',(req, res, next) => {
         console.log(errechneteIban)
 
         // Einfügen von kontonummer in die Tabelle konto (SQL)
-
        
         dbVerbindung.connect(function(err){
     
-            dbVerbindung.query("INSERT konto(iban VARCHAR(22), anfangssaldo INT, kontoart VARCHAR(20), timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
+            dbVerbindung.query("INSERT INTO konto (iban, anfangssaldo, kontoart, timestamp) VALUES ('" + errechneteIban +"', 100, '" + konto.Kontoart + "', NOW());", function(err, result){
                 console.log("Tabelle erstellt bzw. schon existent" + err)
             })
         })
-
 
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
