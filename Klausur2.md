@@ -5,7 +5,7 @@
 3. Selbst etwas ausprogrammieren (GUI oder server.js)
 4. SQL. Evtl. einen unbekannten SQL-Befehl anhand einer gegebenen Dokumentation selbst erstellen.
 5. if und else (auch verschachtelt). Bitte auch die alten if-else-Sachen anschauen im Training-Ordner
-6. Symmetrische und asymmetrische Verschlüsselung erklären / gegeneinander abgrenzen. Den Sinn jeweils erklären. Die Implementation am Rechner kurrz beschreiben.
+6. Symmetrische und asymmetrische Verschlüsselung erklären / gegeneinander abgrenzen. Den Sinn jeweils erklären. Die Implementation am Rechner kurz beschreiben.
 
 
 
