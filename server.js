@@ -310,7 +310,7 @@ app.post('/ueberweisen',(req, res, next) => {
                 if(err){
                     console.log("Es ist ein Fehler aufgetreten: " + err)
                 }else{
-                    console.log("Tabelle erstellt bzw. schon existent.")    
+                    console.log("Tabelle erstellt bzw. schon existent.")                     
                 }        
             })
         })
