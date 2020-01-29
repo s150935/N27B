@@ -7,6 +7,7 @@ class Konto{
     constructor(){
         this.Kontonummer
         this.Kontoart
+        this.Anfangssaldo
     }
 }
 
@@ -181,6 +182,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
    
         konto.Kontonummer = req.body.kontonummer
         konto.Kontoart = req.body.kontoart
+        konto.Anfangssaldo = req.body.anfangssaldo
 
         const bankleitzahl = "27000000"
         const laenderkennung = "DE"
@@ -192,7 +194,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
        
         dbVerbindung.connect(function(err){
 
-            dbVerbindung.query("INSERT INTO konto(iban,anfangssaldo,kontoart, timestamp) VALUES ('" + errechneteIban + "', 2000, '" + kontoart + "', NOW());", function(err, result){
+            dbVerbindung.query("INSERT INTO konto(iban,anfangssaldo,kontoart, timestamp) VALUES ('" + errechneteIban + "', " + konto.Anfangssaldo + ", '" + konto.Kontoart + "', NOW());", function(err, result){
                 if(err){
                     console.log("Es ist ein Fehler aufgetreten: " + err)
                 }else{
@@ -327,6 +329,35 @@ app.post('/ueberweisen',(req, res, next) => {
         // Die login.ejs wird gerendert 
         // und als Response
         // an den Browser übergeben.
+        res.render('login.ejs', {                    
+        })    
+    }
+})
+
+app.get('/kontoAbfragen',(req, res, next) => {   
+
+    let idKunde = req.cookies['istAngemeldetAls']
+    
+    // Aus der Datenbank muss der Kontostand für das Objekt
+    //  selektiert werden.
+
+    dbVerbindung.connect(function(err){
+
+        dbVerbindung.query("SELECT anfangssaldo WHERE iban = '" + konto.Iban + "';", function(err, result){
+            if(err){
+                console.log("Es ist ein Fehler aufgetreten: " + err)
+            }else{
+                console.log("Kontostand wurde erfolgreich abgefragt.")                     
+            }        
+        })
+    })
+
+    if(idKunde){
+        console.log("Kunde ist angemeldet als " + idKunde)
+        res.render('kontoAbfragen.ejs', { 
+            meldung : "Hallo"                             
+        })
+    }else{
         res.render('login.ejs', {                    
         })    
     }
