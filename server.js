@@ -209,7 +209,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
 
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
-           meldung : "Das Konto mit der IBAN " + errechneteIban + " wurde erfolgreich angelegt." 
+           meldung : "Das Konto mit der IBAN " + konto.Iban + " wurde erfolgreich angelegt." 
         })
     }else{
         res.render('login.ejs', {                    
@@ -342,19 +342,17 @@ app.get('/kontoAbfragen',(req, res, next) => {
 
     let idKunde = req.cookies['istAngemeldetAls']
     
-    // Aus der Datenbank muss der Kontostand für das Objekt
-    //  selektiert werden.
-
     dbVerbindung.connect(function(err){
 
-        dbVerbindung.query("SELECT anfangssaldo WHERE iban = '" + konto.Iban + "';", function(err, result){
+        dbVerbindung.query("SELECT anfangssaldo FROM konto WHERE iban = '" + konto.Iban + "';", function(err, result){
             if(err){
                 console.log("Es ist ein Fehler aufgetreten: " + err)
             }else{
-                console.log("Kontostand wurde erfolgreich abgefragt.")                     
+                console.log("Kontostand wurde erfolgreich abgefragt. Der Kontostand ist: " + result[0].anfangssaldo)                                     
             }        
         })
     })
+
 
     if(idKunde){
         console.log("Kunde ist angemeldet als " + idKunde)
