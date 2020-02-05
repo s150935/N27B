@@ -5,11 +5,14 @@
 
 class Konto{
     constructor(){
+        this.Iban
         this.Kontonummer
         this.Kontoart
         this.Anfangssaldo
     }
 }
+
+let konto 
 
 class Kunde{
     constructor(){
@@ -174,7 +177,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
 // Von der Klasse Konto wird ein Objekt namens konto 
 // instanziiert.
 
-        let konto = new Konto()
+        konto = new Konto()
    
 // Nach der Deklaration und der Instanziierung kommt die
 // Initialisierung. Das heißt, dass konkrete Eigenschafts-
@@ -187,20 +190,21 @@ app.post('/kontoAnlegen',(req, res, next) => {
         const bankleitzahl = "27000000"
         const laenderkennung = "DE"
 
-        let errechneteIban = iban.fromBBAN(laenderkennung, bankleitzahl + " " + req.body.kontonummer)
-        console.log(errechneteIban)
+        konto.Iban = iban.fromBBAN(laenderkennung, bankleitzahl + " " + req.body.kontonummer)
+        
+        console.log(konto.Iban)
 
         // Einfügen von kontonummer in die Tabelle konto (SQL)
        
         dbVerbindung.connect(function(err){
 
-            dbVerbindung.query("INSERT INTO konto(iban,anfangssaldo,kontoart, timestamp) VALUES ('" + errechneteIban + "', " + konto.Anfangssaldo + ", '" + konto.Kontoart + "', NOW());", function(err, result){
+            dbVerbindung.query("INSERT INTO konto(iban,anfangssaldo,kontoart, timestamp) VALUES ('" + konto.Iban + "', " + konto.Anfangssaldo + ", '" + konto.Kontoart + "', NOW());", function(err, result){
                 if(err){
                     console.log("Es ist ein Fehler aufgetreten: " + err)
                 }else{
                     console.log("Tabelle erstellt bzw. schon existent.")    
                 }        
-            })
+            })            
         })
 
         console.log("Kunde ist angemeldet als " + idKunde)
