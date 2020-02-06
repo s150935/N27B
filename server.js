@@ -70,9 +70,6 @@ dbVerbindung.connect(function(err){
     })
 })
 
-
-
-
 const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Server lauscht auf Port %s', server.address().port)    
 })
