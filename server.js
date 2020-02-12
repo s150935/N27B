@@ -18,6 +18,7 @@ class Kunde{
     constructor(){
         this.Mail
         this.Nachname
+        this.Vorname
         this.Kennwort
         this.IdKunde
         this.Geburtsdatum
@@ -32,10 +33,6 @@ let kunde = new Kunde()
 
 // Initialisierung
 
-kunde.Mail = "zuki@gmail.com"
-kunde.Name = "Zuki"
-kunde.Kennwort = "123"
-kunde.IdKunde = 4711
 const express = require('express')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -65,9 +62,39 @@ dbVerbindung.connect(function(err){
         if(err){
             console.log("Es ist ein Fehler aufgetreten: " + err)
         }else{
-            console.log("Tabelle erstellt bzw. schon existent.")    
+            console.log("Tabelle konto erstellt bzw. schon existent.")    
         }        
     })
+})
+
+dbVerbindung.connect(function(err){
+
+    dbVerbindung.query("CREATE TABLE IF NOT EXISTS kunde(idkunde INT(11), vorname VARCHAR(45), nachname VARCHAR(45), kennwort VARCHAR(45), mail VARCHAR(45), PRIMARY KEY(idkunde));", function(err, result){
+        if(err){
+            console.log("Es ist ein Fehler aufgetreten: " + err)
+        }else{
+            console.log("Tabelle kunde erstellt bzw. schon existent.")    
+        }        
+    })
+})
+
+kunde.Mail = "s150123@berufskolleg-borken.de"
+kunde.Name = "N"
+kunde.Vorname = "V"
+kunde.Kennwort = "123"
+kunde.IdKunde = 150129
+
+
+dbVerbindung.connect(function(err){
+
+
+    dbVerbindung.query("INSERT INTO kunde(idkunde,vorname,nachname,kennwort,mail) VALUES (" + kunde.IdKunde + ", '" + kunde.Vorname + "', '" + kunde.Nachname + "', '" + kunde.Kennwort + "','" + kunde.Mail + "');", function(err, result){
+        if(err){
+            console.log("Es ist ein Fehler aufgetreten: " + err)
+        }else{
+            console.log("Tabelle erstellt bzw. schon existent.")    
+        }        
+    })            
 })
 
 const server = app.listen(process.env.PORT || 3000, () => {
