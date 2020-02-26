@@ -9,6 +9,8 @@ class Konto{
         this.Kontonummer
         this.Kontoart
         this.Anfangssaldo
+        // Die IdKunde ist eine Eigenschaft von Konto.
+        // Jedes Konto wird einem Kunden zugeordnet.
         this.IdKunde
     }
 }
@@ -20,7 +22,7 @@ class Kunde{
         this.Mail
         this.Nachname
         this.Vorname
-        this.Kennwort
+        this.Kennwort        
         this.IdKunde
         this.Geburtsdatum
         this.Adresse
@@ -59,7 +61,7 @@ dbVerbindung.connect()
 
 dbVerbindung.connect(function(err){
 
-    dbVerbindung.query("CREATE TABLE IF NOT EXISTS konto(iban VARCHAR(22), idkunde INT(11), anfangssaldo DECIMAL(15,2), kontoart VARCHAR(20), timestamp TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
+    dbVerbindung.query("CREATE TABLE IF NOT EXISTS konto(iban VARCHAR(22), idKunde INT(11), anfangssaldo DECIMAL(15,2), kontoart VARCHAR(20), timestamp TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
         if(err){
             console.log("Es ist ein Fehler aufgetreten: " + err)
         }else{
@@ -70,7 +72,7 @@ dbVerbindung.connect(function(err){
 
 dbVerbindung.connect(function(err){
 
-    dbVerbindung.query("CREATE TABLE IF NOT EXISTS kunde(idkunde INT(11), vorname VARCHAR(45), nachname VARCHAR(45), kennwort VARCHAR(45), mail VARCHAR(45), PRIMARY KEY(idkunde));", function(err, result){
+    dbVerbindung.query("CREATE TABLE IF NOT EXISTS kunde(idKunde INT(11), vorname VARCHAR(45), nachname VARCHAR(45), kennwort VARCHAR(45), mail VARCHAR(45), PRIMARY KEY(idKunde));", function(err, result){
         if(err){
             console.log("Es ist ein Fehler aufgetreten: " + err)
         }else{
@@ -87,7 +89,7 @@ kunde.IdKunde = 150129
 
 dbVerbindung.connect(function(err){
 
-    dbVerbindung.query("INSERT INTO kunde(idkunde,vorname,nachname,kennwort,mail) VALUES (" + kunde.IdKunde + ", '" + kunde.Vorname + "', '" + kunde.Nachname + "', '" + kunde.Kennwort + "','" + kunde.Mail + "');", function(err, result){
+    dbVerbindung.query("INSERT INTO kunde(idKunde,vorname,nachname,kennwort,mail) VALUES (" + kunde.IdKunde + ", '" + kunde.Vorname + "', '" + kunde.Nachname + "', '" + kunde.Kennwort + "','" + kunde.Mail + "');", function(err, result){
         if(err){
             console.log("Es ist ein Fehler aufgetreten: " + err)
         }else{
@@ -209,6 +211,7 @@ app.post('/kontoAnlegen',(req, res, next) => {
         konto.Kontonummer = req.body.kontonummer
         konto.Kontoart = req.body.kontoart
         konto.Anfangssaldo = req.body.anfangssaldo
+        konto.IdKunde = idKunde 
 
         const bankleitzahl = "27000000"
         const laenderkennung = "DE"
@@ -221,9 +224,9 @@ app.post('/kontoAnlegen',(req, res, next) => {
        
         dbVerbindung.connect(function(err){
 
-            dbVerbindung.query("INSERT INTO konto(iban,anfangssaldo,kontoart, timestamp) VALUES ('" + konto.Iban + "', " + konto.Anfangssaldo + ", '" + konto.Kontoart + "', NOW());", function(err, result){
+            dbVerbindung.query("INSERT INTO konto(iban, idKunde, anfangssaldo, kontoart, timestamp) VALUES ('" + konto.Iban + "'," + konto.IdKunde + "," + konto.Anfangssaldo + ",'" + konto.Kontoart + "', NOW());", function(err, result){
                 if(err){
-                    console.log("Es ist ein Fehler aufgetreten: " + err)
+                    console.log("Fehler beim Anlegen des Kontos: " + err)
                 }else{
                     console.log("Tabelle erstellt bzw. schon existent.")    
                 }        
