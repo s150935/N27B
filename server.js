@@ -61,22 +61,30 @@ dbVerbindung.connect()
 
 dbVerbindung.connect(function(err){
 
-    dbVerbindung.query("CREATE TABLE IF NOT EXISTS konto(iban VARCHAR(22), idKunde INT(11), anfangssaldo DECIMAL(15,2), kontoart VARCHAR(20), timestamp TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
+    dbVerbindung.query("CREATE TABLE konto(iban VARCHAR(22), idKunde INT(11), anfangssaldo DECIMAL(15,2), kontoart VARCHAR(20), timestamp TIMESTAMP, PRIMARY KEY(iban));", function(err, result){
         if(err){
-            console.log("Es ist ein Fehler aufgetreten: " + err)
+            if(err.code === "ER_TABLE_EXISTS_ERROR"){
+                console.log("Die Tabelle konto existiert bereits.")
+            }else{
+                console.log("Es ist ein Fehler aufgetreten: " + err.code)
+            }            
         }else{
-            console.log("Tabelle konto erstellt bzw. schon existent.")    
+            console.log("Tabelle konto erstellt.")    
         }        
     })
 })
 
 dbVerbindung.connect(function(err){
 
-    dbVerbindung.query("CREATE TABLE IF NOT EXISTS kunde(idKunde INT(11), vorname VARCHAR(45), nachname VARCHAR(45), kennwort VARCHAR(45), mail VARCHAR(45), PRIMARY KEY(idKunde));", function(err, result){
+    dbVerbindung.query("CREATE TABLE kunde(idKunde INT(11), vorname VARCHAR(45), nachname VARCHAR(45), kennwort VARCHAR(45), mail VARCHAR(45), PRIMARY KEY(idKunde));", function(err, result){
         if(err){
-            console.log("Es ist ein Fehler aufgetreten: " + err)
+            if(err.code === "ER_TABLE_EXISTS_ERROR"){
+                console.log("Die Tabelle kunde existiert bereits.")
+            }else{
+                console.log("Es ist ein Fehler aufgetreten: " + err)
+            }            
         }else{
-            console.log("Tabelle kunde erstellt bzw. schon existent.")    
+            console.log("Tabelle kunde erstellt.")    
         }        
     })
 })
@@ -88,12 +96,14 @@ kunde.Kennwort = "123"
 kunde.IdKunde = 150129
 
 dbVerbindung.connect(function(err){
-
     dbVerbindung.query("INSERT INTO kunde(idKunde,vorname,nachname,kennwort,mail) VALUES (" + kunde.IdKunde + ", '" + kunde.Vorname + "', '" + kunde.Nachname + "', '" + kunde.Kennwort + "','" + kunde.Mail + "');", function(err, result){
-        if(err){
-            console.log("Es ist ein Fehler aufgetreten: " + err)
+        if(err){         
+            if(err.code == "ER_DUP_ENTRY")   
+                console.log("Der Kunde mit der ID " + kunde.IdKunde + " existiert bereits.")
+            else
+                console.log("Es ist ein Fehler aufgetreten: " + err)
         }else{
-            console.log("Kunde eingefügt, bzw. existiert schon.")    
+            console.log("Kunde " + kunde.IdKunde + " erfogreich eingefügt.")    
         }        
     })            
 })
@@ -225,17 +235,20 @@ app.post('/kontoAnlegen',(req, res, next) => {
         dbVerbindung.connect(function(err){
 
             dbVerbindung.query("INSERT INTO konto(iban, idKunde, anfangssaldo, kontoart, timestamp) VALUES ('" + konto.Iban + "'," + konto.IdKunde + "," + konto.Anfangssaldo + ",'" + konto.Kontoart + "', NOW());", function(err, result){
-                if(err){
-                    console.log("Fehler beim Anlegen des Kontos: " + err)
+                if(err){         
+                    if(err.code == "ER_DUP_ENTRY")   
+                        console.log("Das Konto " + konto.Iban + " existiert bereits.")
+                    else
+                        console.log("Es ist ein Fehler aufgetreten: " + err)
                 }else{
-                    console.log("Tabelle erstellt bzw. schon existent.")    
-                }        
+                    console.log("Konto " + kunde.IdKunde + " erfolgreich eingefügt.")    
+                }
             })            
         })
 
         console.log("Kunde ist angemeldet als " + idKunde)
         res.render('kontoAnlegen.ejs', {                              
-           meldung : "Das Konto mit der IBAN " + konto.Iban + " wurde erfolgreich angelegt." 
+           meldung : "Das Konto " + konto.Iban + " wurde erfolgreich angelegt." 
         })
     }else{
         res.render('login.ejs', {                    
@@ -274,8 +287,6 @@ app.post('/profilBearbeiten',(req, res, next) => {
         kunde.Nachname = "Schmidt"
         kunde.Kennwort = req.body.kennwort
         
-        
-
         res.render('profilBearbeiten.ejs', {                              
             meldung : "Die Stammdaten wurden geändert."
         })
@@ -374,7 +385,8 @@ app.get('/kontoAbfragen',(req, res, next) => {
             if(err){
                 console.log("Es ist ein Fehler aufgetreten: " + err)
             }else{
-                console.log("Kontostand wurde erfolgreich abgefragt. Der Kontostand ist: " + result[0].anfangssaldo)                                     
+                if(result[0] != null)
+                    console.log("Kontostand wurde erfolgreich abgefragt. Der Kontostand ist: " + result[0].anfangssaldo)                                     
             }        
         })
     })
